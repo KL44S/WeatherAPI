@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Abstractions
+namespace Business.Services.Abstractions
 {
     public interface IWeatherStateService
     {
-        Task<WeatherDTO> GetWeatherStateFromLocation(Location location);
+        Task<WeatherDTO> GetWeatherStateFromLocation(LocationDTO locationDTO);
     }
 }

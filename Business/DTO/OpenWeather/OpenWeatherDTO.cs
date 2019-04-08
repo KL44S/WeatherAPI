@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Business.DTO.OpenWeather
 {
@@ -8,15 +9,5 @@ namespace Business.DTO.OpenWeather
     {
         public SysDTO sys { get; set; }
         public IList<WeatherSateDTO> weather { get; set; }
-
-        public static explicit operator WeatherDTO(OpenWeatherDTO openWeatherDTO)
-        {
-            WeatherDTO weatherDTO = new WeatherDTO();
-            weatherDTO.SunsetUnixTime = openWeatherDTO.sys.sunset;
-            weatherDTO.SunriseUnixTime = openWeatherDTO.sys.sunrise;
-            weatherDTO.WeatherState = openWeatherDTO.weather[0].main;
-
-            return weatherDTO;
-        }
     }
 }

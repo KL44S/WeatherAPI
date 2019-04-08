@@ -7,5 +7,6 @@ namespace Business.DTO.OpenWeather
     public class WeatherSateDTO
     {
         public string main { get; set; }
+        public int id { get; set; }
     }
 }

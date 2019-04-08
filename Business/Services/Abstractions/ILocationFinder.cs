@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Business.DTO;
 using Model;
 
-namespace Business.Abstractions
+namespace Business.Services.Abstractions
 {
     public interface ILocationFinder
     {
-        Task<Location> FindLocationByIp(string ip);
+        Task<LocationDTO> FindLocationByIp(string ip);
     }
 }

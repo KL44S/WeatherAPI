@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Abstractions
+namespace Business.Services.Abstractions
 {
-    public interface ITimeService
+    public interface IGetRestService
     {
-        Task<int> GetUnixTimeFromIp(string ip);
+        Task<T> Get<T>(string url);
     }
 }

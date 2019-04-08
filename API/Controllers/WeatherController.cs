@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Business.Abstractions;
-using Business.Implementations;
+using Business.Services.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model;
@@ -27,7 +26,7 @@ namespace API.Controllers
         public ActionResult<Weather> Get()
         {
             String ip = this._accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            ip = "190.111.232.52";
+            ip = "94.242.57.221";
             Weather weather = this._weatherService.GetWeatherFromIp(ip);
 
             return weather;

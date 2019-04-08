@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Business.Abstractions
+namespace Business.Services.Abstractions
 {
     public interface IGenericRestService : IGetRestService
     {

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Business.Abstractions;
-using Business.Implementations;
+using Business.Factories.Absctractions;
+using Business.Factories.Implementations;
+using Business.Mappers.Implementations;
+using Business.Services.Abstractions;
 using Business.Services.Implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,9 +37,13 @@ namespace API
 
             services.AddScoped<IGenericRestService, GenericRestService>();
             services.AddScoped<ILocationFinder, LocationFinder>();
-            services.AddScoped<ITimeService, TimeService>();
             services.AddScoped<IWeatherStateService, WeatherStateService>();
             services.AddScoped<IWeatherService, WeatherService>();
+
+            services.AddScoped<KeyCDNGeoIpLocationMapper, KeyCDNGeoIpLocationMapper>();
+            services.AddScoped<OpenWeatherMapper, OpenWeatherMapper>();
+
+            services.AddScoped<IDayTimeServiceFactory, DayTimeServiceFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

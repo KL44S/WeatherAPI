@@ -1,4 +1,4 @@
-﻿using Business.Abstractions;
+﻿using Business.Services.Abstractions;
 using Newtonsoft.Json;
 using RestSharp;
 using System;

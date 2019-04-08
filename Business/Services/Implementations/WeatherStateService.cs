@@ -1,6 +1,7 @@
-﻿using Business.Abstractions;
-using Business.DTO;
+﻿using Business.DTO;
 using Business.DTO.OpenWeather;
+using Business.Mappers.Implementations;
+using Business.Services.Abstractions;
 using Model;
 using Newtonsoft.Json;
 using RestSharp;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Implementations
+namespace Business.Services.Implementations
 {
     public class WeatherStateService : IWeatherStateService
     {
@@ -19,24 +20,26 @@ namespace Business.Implementations
         private static string _citySeparator = ",";
 
         private IGenericRestService _genericRestService;
+        private OpenWeatherMapper _weatherMapper;
 
-        public WeatherStateService(IGenericRestService genericRestService)
+        public WeatherStateService(IGenericRestService genericRestService, OpenWeatherMapper weatherMapper)
         {
             this._genericRestService = genericRestService;
+            this._weatherMapper = weatherMapper;
         }
 
-        public async Task<WeatherDTO> GetWeatherStateFromLocation(Location location)
+        public async Task<WeatherDTO> GetWeatherStateFromLocation(LocationDTO locationDTO)
         {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append(_openWeatherApiUrl);
-            stringBuilder.Append(location.CityName);
+            stringBuilder.Append(locationDTO.CityName);
             stringBuilder.Append(_citySeparator);
-            stringBuilder.Append(location.CountryCode);
+            stringBuilder.Append(locationDTO.CountryCode);
 
             string fullUrl = stringBuilder.ToString();
 
-            OpenWeatherDTO openWeatherDTO =  await this._genericRestService.Get<OpenWeatherDTO>(fullUrl);
-            WeatherDTO weatherDTO = (WeatherDTO)openWeatherDTO;
+            OpenWeatherDTO openWeatherDTO = await this._genericRestService.Get<OpenWeatherDTO>(fullUrl);
+            WeatherDTO weatherDTO = this._weatherMapper.Map(openWeatherDTO);
 
             return weatherDTO;
         }
