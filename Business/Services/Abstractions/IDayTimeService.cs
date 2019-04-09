@@ -7,6 +7,6 @@ namespace Business.Services.Abstractions
 {
     public interface IDayTimeService
     {
-        DayTime GetDayTime(long sunriseUnixTime, long sunsetUnixTime, long currentUnixTime);
+        DayTime GetDayTime(DateTime sunriseTime, DateTime sunsetTime, DateTime currentTime);
     }
 }

@@ -8,6 +8,5 @@ namespace Business.DTO
     {
         public string CityName { get; set; }
         public string CountryCode { get; set; }
-        public long UnixTime { get; set; }
     }
 }

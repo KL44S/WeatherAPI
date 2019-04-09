@@ -12,9 +12,9 @@ namespace Business.Services.Implementations
     {
         public async Task<T> Get<T>(string url)
         {
-            RestClient client = new RestClient(url);
+            IRestClient client = new RestClient(url);
 
-            RestRequest request = new RestRequest(Method.GET);
+            IRestRequest request = new RestRequest(Method.GET);
             request.AddHeader("cache-control", "no-cache");
 
             Task<IRestResponse> task = Task.Factory.StartNew(() => client.Execute(request));

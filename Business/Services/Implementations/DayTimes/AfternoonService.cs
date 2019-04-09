@@ -9,14 +9,11 @@ namespace Business.Services.Implementations.DayTimes
 {
     public class AfternoonService : DayTimeService
     {
-        protected override long GetMaxUnitTime(long sunriseUnixTime, long sunsetUnixTime)
+        protected override DateTime GetMaxUnitTime(DateTime sunriseTime, DateTime sunsetTime)
         {
-            DateTime sunset = DateTimeUtils.GetDateTimeFromUnixSeconds(sunsetUnixTime);
-            DateTime anHourAgoOfSunset = sunset.AddHours(-1);
+            DateTime anHourAgoOfSunset = sunsetTime.AddHours(-1);
 
-            long maxUnixTime = DateTimeUtils.GetUnixTimeFromDateTime(anHourAgoOfSunset);
-
-            return maxUnixTime;
+            return anHourAgoOfSunset;
         }
 
         public AfternoonService() : base(DayTime.Afternoon) { }

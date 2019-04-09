@@ -9,9 +9,12 @@ namespace Business.Services.Implementations.DayTimes
 {
     public class NoonService : DayTimeService
     {
-        protected override long GetMaxUnitTime(long sunriseUnixTime, long sunsetUnixTime)
+        protected override DateTime GetMaxUnitTime(DateTime sunriseTime, DateTime sunsetTime)
         {
-            return sunriseUnixTime;
+            DateTime noon = DateTimeUtils.GetNoon(sunriseTime, sunsetTime);
+            DateTime anHourAfterOfNoon = noon.AddHours(1);
+
+            return anHourAfterOfNoon;
         }
 
         public NoonService() : base(DayTime.Noon) { }

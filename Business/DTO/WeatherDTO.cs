@@ -8,7 +8,7 @@ namespace Business.DTO
     public class WeatherDTO
     {
         public WeatherState WeatherState { get; set; }
-        public int SunriseUnixTime { get; set; }
-        public int SunsetUnixTime { get; set; }
+        public DateTime SunriseTime { get; set; }
+        public DateTime SunsetTime { get; set; }
     }
 }

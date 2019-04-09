@@ -15,10 +15,20 @@ namespace Business.Utils
 
         public static long GetUnixTimeFromDateTime(DateTime dateTime)
         {
-            DateTimeOffset dateTimeOffset = new DateTimeOffset(dateTime);
-            long unixTime = dateTimeOffset.ToUnixTimeSeconds();
+            //long unixTime = (long)dateTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            
+            DateTimeOffset dateTimeOffset = new DateTimeOffset(dateTime.ToUniversalTime());
+            long unixTime = dateTimeOffset.ToUniversalTime().ToUnixTimeSeconds();
 
             return unixTime;
+        }
+
+        public static DateTime GetNoon(DateTime sunriseTime, DateTime sunsetTime)
+        {
+            TimeSpan noonHour = new TimeSpan((sunsetTime.TimeOfDay - sunriseTime.TimeOfDay).Ticks / 2);
+            DateTime noon = (sunriseTime + noonHour);
+
+            return noon;
         }
     }
 }

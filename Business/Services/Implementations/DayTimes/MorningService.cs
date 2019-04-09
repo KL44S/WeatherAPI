@@ -9,18 +9,12 @@ namespace Business.Services.Implementations.DayTimes
 {
     public class MorningService : DayTimeService
     {
-        protected override long GetMaxUnitTime(long sunriseUnixTime, long sunsetUnixTime)
+        protected override DateTime GetMaxUnitTime(DateTime sunriseTime, DateTime sunsetTime)
         {
-            DateTime sunrise = DateTimeUtils.GetDateTimeFromUnixSeconds(sunriseUnixTime);
-            DateTime sunset = DateTimeUtils.GetDateTimeFromUnixSeconds(sunsetUnixTime);
+            DateTime noon = DateTimeUtils.GetNoon(sunriseTime, sunsetTime);
+            DateTime anHourBeforeNoon = noon.AddHours(-1);
 
-            int noonHour =( ((sunset.Hour - sunrise.Hour) / 2) + sunrise.Hour);
-
-            DateTime anHourAgoOfNoon = new DateTime(noonHour - 1, sunrise.Month, sunrise.Day);
-
-            long maxUnixTime = DateTimeUtils.GetUnixTimeFromDateTime(anHourAgoOfNoon);
-
-            return maxUnixTime;
+            return anHourBeforeNoon;
         }
 
         public MorningService() : base(DayTime.Morning) { }

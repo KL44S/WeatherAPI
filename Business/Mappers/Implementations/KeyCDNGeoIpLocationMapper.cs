@@ -9,14 +9,13 @@ using System.Text;
 
 namespace Business.Mappers.Implementations
 {
-    public class KeyCDNGeoIpLocationMapper : ISingleEntityMapper<LocationDTO, GeoIpLocationDTO>
+    public class KeyCDNGeoIpLocationMapper : IKeyCDNGeoIpLocationMapper
     {
         public LocationDTO Map(GeoIpLocationDTO geoIpLocationDTO)
         {
             LocationDTO location = new LocationDTO();
             location.CityName = geoIpLocationDTO.data.geo.city;
             location.CountryCode = geoIpLocationDTO.data.geo.country_code;
-            location.UnixTime = DateTimeUtils.GetUnixTimeFromDateTime(geoIpLocationDTO.data.geo.datetime);
 
             return location;
         }

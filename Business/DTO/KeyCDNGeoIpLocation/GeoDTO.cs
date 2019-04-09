@@ -8,6 +8,5 @@ namespace Business.DTO.KeyCDNGeoIpLocation
     {
         public string city { get; set; }
         public string country_code { get; set; }
-        public DateTime datetime { get; set; }
     }
 }

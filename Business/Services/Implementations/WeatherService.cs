@@ -14,6 +14,7 @@ namespace Business.Services.Implementations
         private IWeatherStateService _weatherStateService;
         private ILocationFinder _locationFinder;
         private IDayTimeService _dayTimeService;
+        private ITimeService _timeService;
 
         private WeatherDTO GetWeatherDTO(LocationDTO locationDTO)
         {
@@ -31,30 +32,42 @@ namespace Business.Services.Implementations
             return locationTask.Result;
         }
 
-        private Weather GetWeather(WeatherDTO weatherDTO, long currentUnixTime)
+        private Weather GetWeather(WeatherDTO weatherDTO, TimeDTO timeDTO)
         {
             Weather weather = new Weather();
             weather.WeatherState = weatherDTO.WeatherState;
-            weather.DayTime = this._dayTimeService.GetDayTime(weatherDTO.SunriseUnixTime, weatherDTO.SunsetUnixTime, currentUnixTime);
+            weather.DayTime = this._dayTimeService.GetDayTime(weatherDTO.SunriseTime, weatherDTO.SunsetTime, timeDTO.Time);
 
             return weather;
         }
 
         public WeatherService(IWeatherStateService weatherStateService,
                                 ILocationFinder locationFinder,
-                                IDayTimeServiceFactory dayTimeServiceFactory)
+                                IDayTimeServiceFactory dayTimeServiceFactory,
+                                ITimeService timeService)
         {
             this._weatherStateService = weatherStateService;
             this._locationFinder = locationFinder;
             this._dayTimeService = dayTimeServiceFactory.BuildAndGetInstance();
+            this._timeService = timeService;
         }
 
         public Weather GetWeatherFromIp(string ip)
         {
-            LocationDTO locationDTO = this.GetLocationDTO(ip);
-            WeatherDTO weatherDTO = this.GetWeatherDTO(locationDTO);
+            Task<LocationDTO> locationTask = this._locationFinder.FindLocationByIp(ip);
+            Task<TimeDTO> timeTask = this._timeService.GetTimeFromIp(ip);
+            WeatherDTO weatherDTO = null;
 
-            Weather weather = this.GetWeather(weatherDTO, locationDTO.UnixTime);
+            Task weatherDTOTask = locationTask.ContinueWith((task) =>
+            {
+                LocationDTO locationDTO = task.Result;
+
+                weatherDTO = this.GetWeatherDTO(locationDTO);
+            });
+
+            Task.WaitAll(weatherDTOTask, timeTask);
+
+            Weather weather = this.GetWeather(weatherDTO, timeTask.Result);
 
             return weather;
         }

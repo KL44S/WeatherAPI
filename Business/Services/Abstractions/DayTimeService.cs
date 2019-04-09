@@ -7,13 +7,12 @@ namespace Business.Services.Abstractions
 {
     public abstract class DayTimeService : IDayTimeService
     {
-        private static long _invalidMinUnixTime = -1;
-        protected static long _minUnixTime = _invalidMinUnixTime;
+        protected static DateTime? _minTime;
 
         protected DayTime _dayTime;
         private IDayTimeService _nextDayTimeService;
         
-        protected abstract long GetMaxUnitTime(long sunriseUnixTime, long sunsetUnixTime);
+        protected abstract DateTime GetMaxUnitTime(DateTime sunriseTime, DateTime sunsetTime);
 
         protected DayTimeService(DayTime dayTime)
         {
@@ -26,28 +25,31 @@ namespace Business.Services.Abstractions
             this._nextDayTimeService = nextDayTimeService;
         }
 
-        private void InitMinUnixTimeIfItIsNecessary(long sunriseUnixTime)
+        private void InitMinUnixTimeIfItIsNecessary(DateTime sunriseTime)
         {
-            if (_minUnixTime.Equals(_invalidMinUnixTime))
+            if (!_minTime.HasValue)
             {
-                _minUnixTime = sunriseUnixTime;
+                _minTime = sunriseTime;
             }
         }
 
-        public DayTime GetDayTime(long sunriseUnixTime, long sunsetUnixTime, long currentUnixTime)
+        public DayTime GetDayTime(DateTime sunriseTime, DateTime sunsetTime, DateTime currentTime)
         {
-            this.InitMinUnixTimeIfItIsNecessary(sunriseUnixTime);
+            this.InitMinUnixTimeIfItIsNecessary(sunriseTime);
 
             DayTime resultDayTime = this._dayTime;
 
-            long maxUnixTime = this.GetMaxUnitTime(sunriseUnixTime, sunsetUnixTime);
+            DateTime maxTime = this.GetMaxUnitTime(sunriseTime, sunsetTime);
 
-            Boolean isMyDayTimePeriod = (currentUnixTime > _minUnixTime && currentUnixTime <= maxUnixTime);
+            int minTimeComparisonResult = currentTime.CompareTo(_minTime);
+            int maxTimeComparisonResult = currentTime.CompareTo(maxTime);
+
+            Boolean isMyDayTimePeriod = (minTimeComparisonResult > 0 && maxTimeComparisonResult <= 0);
 
             if (!isMyDayTimePeriod && this._nextDayTimeService != null)
             {
-                _minUnixTime = maxUnixTime;
-                resultDayTime = this._nextDayTimeService.GetDayTime(sunriseUnixTime, sunsetUnixTime, currentUnixTime);
+                _minTime = maxTime;
+                resultDayTime = this._nextDayTimeService.GetDayTime(sunriseTime, sunsetTime, currentTime);
             }
 
             return resultDayTime;

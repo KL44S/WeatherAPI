@@ -15,7 +15,7 @@ namespace Business.Factories.Implementations
             IDayTimeService duskService = new DuskService(nightService);
             IDayTimeService afternoonService = new AfternoonService(duskService);
             IDayTimeService noonService = new NoonService(afternoonService);
-            IDayTimeService morningService = new NoonService(noonService);
+            IDayTimeService morningService = new MorningService(noonService);
             IDayTimeService dawnService = new DawnService(morningService);
 
             return dawnService;

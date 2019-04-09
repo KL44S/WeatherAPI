@@ -9,9 +9,9 @@ namespace Business.Services.Implementations.DayTimes
 {
     public class DuskService : DayTimeService
     {
-        protected override long GetMaxUnitTime(long sunriseUnixTime, long sunsetUnixTime)
+        protected override DateTime GetMaxUnitTime(DateTime sunriseTime, DateTime sunsetTime)
         {
-            return sunsetUnixTime;
+            return sunsetTime;
         }
 
         public DuskService() : base(DayTime.Dusk) { }

@@ -2,8 +2,8 @@
 using Model;
 using Business.DTO.KeyCDNGeoIpLocation;
 using Business.Services.Abstractions;
-using Business.Mappers.Implementations;
 using Business.DTO;
+using Business.Mappers.Abstractions;
 
 namespace Business.Services.Implementations
 {
@@ -12,9 +12,9 @@ namespace Business.Services.Implementations
         private static string _ipLocationApiUrl = @"https://tools.keycdn.com/geo.json?host=";
 
         private IGenericRestService _genericRestService;
-        private KeyCDNGeoIpLocationMapper _locationMapper;
+        private IKeyCDNGeoIpLocationMapper _locationMapper;
 
-        public LocationFinder(IGenericRestService genericRestService, KeyCDNGeoIpLocationMapper locationMapper)
+        public LocationFinder(IGenericRestService genericRestService, IKeyCDNGeoIpLocationMapper locationMapper)
         {
             this._genericRestService = genericRestService;
             this._locationMapper = locationMapper;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business.Factories.Absctractions;
 using Business.Factories.Implementations;
+using Business.Mappers.Abstractions;
 using Business.Mappers.Implementations;
 using Business.Services.Abstractions;
 using Business.Services.Implementations;
@@ -35,14 +36,19 @@ namespace API
             //Dependency Injection
             services.AddHttpContextAccessor();
 
+            //Services
             services.AddScoped<IGenericRestService, GenericRestService>();
             services.AddScoped<ILocationFinder, LocationFinder>();
             services.AddScoped<IWeatherStateService, WeatherStateService>();
+            services.AddScoped<ITimeService, TimeService>();
             services.AddScoped<IWeatherService, WeatherService>();
 
-            services.AddScoped<KeyCDNGeoIpLocationMapper, KeyCDNGeoIpLocationMapper>();
-            services.AddScoped<OpenWeatherMapper, OpenWeatherMapper>();
+            //Mappers
+            services.AddScoped<IKeyCDNGeoIpLocationMapper, KeyCDNGeoIpLocationMapper>();
+            services.AddScoped<IOpenWeatherMapper, OpenWeatherMapper>();
+            services.AddScoped<IWorldTimeMapper, WorldTimeMapper>();
 
+            //Factories
             services.AddScoped<IDayTimeServiceFactory, DayTimeServiceFactory>();
         }
 

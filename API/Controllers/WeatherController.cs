@@ -23,10 +23,13 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<Weather> Get()
+        public ActionResult<Weather> Get(string ip)
         {
-            String ip = this._accessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            ip = "94.242.57.221";
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = this._accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+
             Weather weather = this._weatherService.GetWeatherFromIp(ip);
 
             return weather;

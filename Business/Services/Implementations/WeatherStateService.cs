@@ -1,6 +1,6 @@
 ﻿using Business.DTO;
 using Business.DTO.OpenWeather;
-using Business.Mappers.Implementations;
+using Business.Mappers.Abstractions;
 using Business.Services.Abstractions;
 using Model;
 using Newtonsoft.Json;
@@ -20,9 +20,9 @@ namespace Business.Services.Implementations
         private static string _citySeparator = ",";
 
         private IGenericRestService _genericRestService;
-        private OpenWeatherMapper _weatherMapper;
+        private IOpenWeatherMapper _weatherMapper;
 
-        public WeatherStateService(IGenericRestService genericRestService, OpenWeatherMapper weatherMapper)
+        public WeatherStateService(IGenericRestService genericRestService, IOpenWeatherMapper weatherMapper)
         {
             this._genericRestService = genericRestService;
             this._weatherMapper = weatherMapper;

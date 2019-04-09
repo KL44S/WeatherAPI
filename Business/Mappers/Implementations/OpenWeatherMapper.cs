@@ -6,11 +6,12 @@ using System.Text.RegularExpressions;
 using Business.DTO;
 using Business.DTO.OpenWeather;
 using Business.Mappers.Abstractions;
+using Business.Utils;
 using Model;
 
 namespace Business.Mappers.Implementations
 {
-    public class OpenWeatherMapper : ISingleEntityMapper<WeatherDTO, OpenWeatherDTO>
+    public class OpenWeatherMapper : IOpenWeatherMapper
     {
         private static IDictionary<string, WeatherState> _weatherSatesByStartCode = new Dictionary<string, WeatherState>()
         {
@@ -51,8 +52,8 @@ namespace Business.Mappers.Implementations
         public WeatherDTO Map(OpenWeatherDTO openWeatherDTO)
         {
             WeatherDTO weatherDTO = new WeatherDTO();
-            weatherDTO.SunsetUnixTime = openWeatherDTO.sys.sunset;
-            weatherDTO.SunriseUnixTime = openWeatherDTO.sys.sunrise;
+            weatherDTO.SunsetTime = DateTimeUtils.GetDateTimeFromUnixSeconds(openWeatherDTO.sys.sunset);
+            weatherDTO.SunriseTime = DateTimeUtils.GetDateTimeFromUnixSeconds(openWeatherDTO.sys.sunrise);
             weatherDTO.WeatherState = this.GetWeatherState(openWeatherDTO.weather[0].id);
 
             return weatherDTO;
