@@ -11,6 +11,7 @@ namespace Business.Services.Implementations
 {
     public class WeatherService : IWeatherService
     {
+
         private IWeatherStateService _weatherStateService;
         private ILocationFinder _locationFinder;
         private IDayTimeService _dayTimeService;
@@ -54,18 +55,40 @@ namespace Business.Services.Implementations
 
         public Weather GetWeatherFromIp(string ip)
         {
-            Task<LocationDTO> locationTask = this._locationFinder.FindLocationByIp(ip);
-            Task<TimeDTO> timeTask = this._timeService.GetTimeFromIp(ip);
             WeatherDTO weatherDTO = null;
 
-            Task weatherDTOTask = locationTask.ContinueWith((task) =>
-            {
-                LocationDTO locationDTO = task.Result;
+            Task<LocationDTO> locationTask = this._locationFinder.FindLocationByIp(ip);
+            Task<TimeDTO> timeTask = this._timeService.GetTimeFromIp(ip);
 
-                weatherDTO = this.GetWeatherDTO(locationDTO);
+            Task weatherTask = locationTask.ContinueWith((task) =>
+            {
+                if (task.Exception == null)
+                {
+                    LocationDTO locationDTO = task.Result;
+
+                    weatherDTO = this.GetWeatherDTO(locationDTO);
+                }
+
             });
 
-            Task.WaitAll(weatherDTOTask, timeTask);
+            try
+            {
+                Task.WaitAll(weatherTask, timeTask);
+            }
+            catch (AggregateException aggregateException)
+            {
+                Exception exception = aggregateException;
+
+                while (exception is AggregateException && exception.InnerException != null)
+                {
+                    exception = exception.InnerException;
+                }
+
+                if (exception != null)
+                {
+                    throw exception;
+                }
+            }
 
             Weather weather = this.GetWeather(weatherDTO, timeTask.Result);
 

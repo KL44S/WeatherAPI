@@ -4,6 +4,8 @@ using Business.DTO.KeyCDNGeoIpLocation;
 using Business.Services.Abstractions;
 using Business.DTO;
 using Business.Mappers.Abstractions;
+using System;
+using Business.Exceptions;
 
 namespace Business.Services.Implementations
 {
@@ -14,6 +16,13 @@ namespace Business.Services.Implementations
         private IGenericRestService _genericRestService;
         private IKeyCDNGeoIpLocationMapper _locationMapper;
 
+        private bool IsValid(GeoIpLocationDTO geoIpLocationDTO)
+        {
+            bool isValid = (geoIpLocationDTO != null && !string.IsNullOrEmpty(geoIpLocationDTO.data.geo.city));
+
+            return isValid;
+        }
+
         public LocationFinder(IGenericRestService genericRestService, IKeyCDNGeoIpLocationMapper locationMapper)
         {
             this._genericRestService = genericRestService;
@@ -22,13 +31,25 @@ namespace Business.Services.Implementations
 
         public async Task<LocationDTO> FindLocationByIp(string ip)
         {
-            string fullUrl = _ipLocationApiUrl + ip;
+            try
+            {
+                string fullUrl = _ipLocationApiUrl + ip;
 
-            GeoIpLocationDTO locationDTO = await this._genericRestService.Get<GeoIpLocationDTO>(fullUrl);
+                GeoIpLocationDTO geoIpLocationDTO = await this._genericRestService.Get<GeoIpLocationDTO>(fullUrl);
 
-            LocationDTO location = this._locationMapper.Map(locationDTO);
+                if (!this.IsValid(geoIpLocationDTO))
+                {
+                    throw new NoLocationFoundException();
+                }
 
-            return location;
+                LocationDTO locationDTO = this._locationMapper.Map(geoIpLocationDTO);
+
+                return locationDTO;
+            }
+            catch (NotFoundException)
+            {
+                throw new NoLocationFoundException();
+            }
         }
     }
 }

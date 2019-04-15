@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.DTO.WorldTime;
+using Business.Exceptions;
 using Business.Mappers.Abstractions;
 using Business.Services.Abstractions;
 using System;
@@ -16,6 +17,13 @@ namespace Business.Services.Implementations
         private IGenericRestService _genericRestService;
         private IWorldTimeMapper _worldTimeMapper;
 
+        private bool IsValid(WorldTimeDTO worldTimeDTO)
+        {
+            bool isValid = (worldTimeDTO != null);
+
+            return isValid;
+        }
+
         public TimeService(IGenericRestService genericRestService, IWorldTimeMapper worldTimeMapper)
         {
             this._genericRestService = genericRestService;
@@ -24,12 +32,25 @@ namespace Business.Services.Implementations
 
         public async Task<TimeDTO> GetTimeFromIp(string ip)
         {
-            string fullUrl = _worldTimeAPIUrl + ip;
+            try
+            {
+                string fullUrl = _worldTimeAPIUrl + ip;
 
-            WorldTimeDTO worldTimeDTO = await this._genericRestService.Get<WorldTimeDTO>(fullUrl);
-            TimeDTO timeDTO = this._worldTimeMapper.Map(worldTimeDTO);
+                WorldTimeDTO worldTimeDTO = await this._genericRestService.Get<WorldTimeDTO>(fullUrl);
 
-            return timeDTO;
+                if (!this.IsValid(worldTimeDTO))
+                {
+                    throw new NoTimeFoundException();
+                }
+
+                TimeDTO timeDTO = this._worldTimeMapper.Map(worldTimeDTO);
+
+                return timeDTO;
+            }
+            catch (NotFoundException)
+            {
+                throw new NoTimeFoundException();
+            }
         }
     }
 }

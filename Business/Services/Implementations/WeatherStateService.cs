@@ -1,5 +1,6 @@
 ﻿using Business.DTO;
 using Business.DTO.OpenWeather;
+using Business.Exceptions;
 using Business.Mappers.Abstractions;
 using Business.Services.Abstractions;
 using Model;
@@ -30,18 +31,26 @@ namespace Business.Services.Implementations
 
         public async Task<WeatherDTO> GetWeatherStateFromLocation(LocationDTO locationDTO)
         {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(_openWeatherApiUrl);
-            stringBuilder.Append(locationDTO.CityName);
-            stringBuilder.Append(_citySeparator);
-            stringBuilder.Append(locationDTO.CountryCode);
+            try
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append(_openWeatherApiUrl);
+                stringBuilder.Append(locationDTO.CityName);
+                stringBuilder.Append(_citySeparator);
+                stringBuilder.Append(locationDTO.CountryCode);
 
-            string fullUrl = stringBuilder.ToString();
+                string fullUrl = stringBuilder.ToString();
 
-            OpenWeatherDTO openWeatherDTO = await this._genericRestService.Get<OpenWeatherDTO>(fullUrl);
-            WeatherDTO weatherDTO = this._weatherMapper.Map(openWeatherDTO);
+                OpenWeatherDTO openWeatherDTO = await this._genericRestService.Get<OpenWeatherDTO>(fullUrl);
+                WeatherDTO weatherDTO = this._weatherMapper.Map(openWeatherDTO);
 
-            return weatherDTO;
+                return weatherDTO;
+            }
+            catch (NotFoundException)
+            {
+                throw new NoWeatherStateFoundException();
+            }
+
         }
     }
 }
